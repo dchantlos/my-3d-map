@@ -5,63 +5,53 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>My 3D Map</title>
 
-    <!-- ArcGIS Maps SDK for JavaScript v5 -->
-    <link rel="stylesheet" href="https://js.arcgis.com/5/esri/themes/light/main.css" />
-    <script src="https://js.arcgis.com/5/"></script>
+    <!-- ArcGIS Maps SDK for JavaScript v5 (correct CDN URL) -->
+    <script type="module" src="https://js.arcgis.com/5.0/"></script>
+    <!-- Required CSS for widgets -->
+    <link rel="stylesheet" href="https://js.arcgis.com/5.0/esri/themes/light/main.css" />
 
     <style>
       html,
-      body,
-      #viewDiv {
+      body {
         margin: 0;
         padding: 0;
-        width: 100%;
+        height: 100%;
+      }
+      arcgis-scene {
+        display: block;
         height: 100%;
       }
     </style>
   </head>
   <body>
-    <div id="viewDiv"></div>
+    <!--
+      The arcgis-scene element is created in JavaScript (below) so that
+      esriConfig.portalUrl can be set BEFORE the component starts loading.
+    -->
 
-    <script>
-      require([
-        "esri/config",
-        "esri/WebScene",
-        "esri/views/SceneView",
-        "esri/widgets/ShadowCast",
-        "esri/widgets/LayerList"
-      ], function (esriConfig, WebScene, SceneView, ShadowCast, LayerList) {
+    <script type="module">
+      // 1. Set portalUrl BEFORE the scene component is added to the page.
+      //    $arcgis.import() is the v5 replacement for the old AMD require().
+      const esriConfig = await $arcgis.import("@arcgis/core/config.js");
+      esriConfig.portalUrl = "https://arcaec.maps.arcgis.com";
 
-        // Point to your organization's portal
-        esriConfig.portalUrl = "https://arcaec.maps.arcgis.com";
+      // 2. Create the <arcgis-scene> web component and configure it.
+      const scene = document.createElement("arcgis-scene");
+      scene.setAttribute("item-id", "4f053fd887b24a01927d47b766455e3c");
+      scene.setAttribute("quality-profile", "high");
 
-        // Load the WebScene by its portal item ID
-        const webScene = new WebScene({
-          portalItem: {
-            id: "4f053fd887b24a01927d47b766455e3c"
-          }
-        });
+      // 3. Add the LayerList component to the top-left slot.
+      const layerList = document.createElement("arcgis-layer-list");
+      layerList.setAttribute("slot", "top-left");
+      scene.appendChild(layerList);
 
-        // Create the SceneView with a high-quality rendering profile
-        const view = new SceneView({
-          container: "viewDiv",
-          map: webScene,
-          qualityProfile: "high"
-        });
+      // 4. Add the ShadowCast component to the top-right slot.
+      const shadowCast = document.createElement("arcgis-shadow-cast");
+      shadowCast.setAttribute("slot", "top-right");
+      scene.appendChild(shadowCast);
 
-        // Add the LayerList widget to the top-left
-        const layerList = new LayerList({
-          view: view
-        });
-        view.ui.add(layerList, "top-left");
-
-        // Add the ShadowCast widget to the top-right
-        const shadowCast = new ShadowCast({
-          view: view
-        });
-        view.ui.add(shadowCast, "top-right");
-
-      });
+      // 5. Add everything to the page.
+      document.body.appendChild(scene);
     </script>
   </body>
 </html>
