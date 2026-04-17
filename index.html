@@ -40,15 +40,21 @@
       scene.setAttribute("item-id", "4f053fd887b24a01927d47b766455e3c");
       scene.setAttribute("quality-profile", "high");
 
-      // 3. Add the LayerList component to the top-left slot.
+      // 3. Wrap LayerList in an Expand so it's collapsible (top-left).
       const layerList = document.createElement("arcgis-layer-list");
-      layerList.setAttribute("slot", "top-left");
-      scene.appendChild(layerList);
+      const layerListExpand = document.createElement("arcgis-expand");
+      layerListExpand.setAttribute("slot", "top-left");
+      layerListExpand.setAttribute("expand-tooltip", "Layer List");
+      layerListExpand.appendChild(layerList);
+      scene.appendChild(layerListExpand);
 
-      // 4. Add the ShadowCast component to the top-right slot.
+      // 4. Wrap ShadowCast in an Expand for a sleek, compact button (top-right).
       const shadowCast = document.createElement("arcgis-shadow-cast");
-      shadowCast.setAttribute("slot", "top-right");
-      scene.appendChild(shadowCast);
+      const shadowExpand = document.createElement("arcgis-expand");
+      shadowExpand.setAttribute("slot", "top-right");
+      shadowExpand.setAttribute("expand-tooltip", "Shadow Cast");
+      shadowExpand.appendChild(shadowCast);
+      scene.appendChild(shadowExpand);
 
       // 5. Add everything to the page.
       document.body.appendChild(scene);
