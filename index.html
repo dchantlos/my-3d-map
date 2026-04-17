@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>My 3D Map</title>
+
+    <!-- ArcGIS Maps SDK for JavaScript v5 -->
+    <link rel="stylesheet" href="https://js.arcgis.com/5/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/5/"></script>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="viewDiv"></div>
+
+    <script>
+      require([
+        "esri/config",
+        "esri/WebScene",
+        "esri/views/SceneView",
+        "esri/widgets/ShadowCast",
+        "esri/widgets/LayerList"
+      ], function (esriConfig, WebScene, SceneView, ShadowCast, LayerList) {
+
+        // Point to your organization's portal
+        esriConfig.portalUrl = "https://arcaec.maps.arcgis.com";
+
+        // Load the WebScene by its portal item ID
+        const webScene = new WebScene({
+          portalItem: {
+            id: "4f053fd887b24a01927d47b766455e3c"
+          }
+        });
+
+        // Create the SceneView with a high-quality rendering profile
+        const view = new SceneView({
+          container: "viewDiv",
+          map: webScene,
+          qualityProfile: "high"
+        });
+
+        // Add the LayerList widget to the top-left
+        const layerList = new LayerList({
+          view: view
+        });
+        view.ui.add(layerList, "top-left");
+
+        // Add the ShadowCast widget to the top-right
+        const shadowCast = new ShadowCast({
+          view: view
+        });
+        view.ui.add(shadowCast, "top-right");
+
+      });
+    </script>
+  </body>
+</html>
